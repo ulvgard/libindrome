@@ -1,0 +1,4 @@
+set(DEFAULT_CAPTURE show_default_capture.cpp)
+
+add_executable(show_default_capture ${DEFAULT_CAPTURE})
+target_link_libraries(show_default_capture opencv_core opencv_imgproc opencv_videoio opencv_highgui)

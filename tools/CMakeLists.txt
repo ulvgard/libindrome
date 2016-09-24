@@ -1,1 +1,2 @@
 add_subdirectory(lsvideo)
+add_subdirectory(show_default_capture)
