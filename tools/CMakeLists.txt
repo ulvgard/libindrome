@@ -1,3 +1,4 @@
+add_subdirectory(baw)
 add_subdirectory(catvid)
 add_subdirectory(lsvideo)
 add_subdirectory(resizevid)
