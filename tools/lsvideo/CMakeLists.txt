@@ -1,4 +1,4 @@
 set(LSVIDEO_SRC lsvideo.cpp)
 
 add_executable(lsvideo ${LSVIDEO_SRC})
-target_link_libraries(lsvideo indrome)
+target_link_libraries(lsvideo libindrome)
