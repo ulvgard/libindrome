@@ -1,10 +1,12 @@
 #include <opencv2/opencv.hpp>
 
+
 namespace indrome 
 {
     /**
      * Send a closing marker to all applications in the pipeline.
      **/
+    void write_close_signal_to_fd(int fd);
     void write_close_signal_to_stdout();
 
     /**
@@ -18,6 +20,8 @@ namespace indrome
      *
      * @param frame The OpenCV frame to print
      **/
+
+    void write_frame_to_fd(const cv::Mat& frame, int fd);
     void write_frame_to_stdout(const cv::Mat& frame);
 
     /**
@@ -33,4 +37,5 @@ namespace indrome
      * @return frame the read OpenCV frame; 
      **/
     cv::Mat read_frame_from_stdin();
+    cv::Mat read_frame_from_fd(int fd);
 }

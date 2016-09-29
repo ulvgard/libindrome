@@ -5,7 +5,7 @@
 
 void usage() 
 {
-    std::cout << "Usage: IMAGE" << std::endl;
+    std::cout << "Usage: [IMAGE]" << std::endl;
 }
 
 int main(int argc, char* argv[]) 

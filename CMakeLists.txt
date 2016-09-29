@@ -1,4 +1,5 @@
-project(libindrome)
+cmake_minimum_required(VERSION 3.6) # The only tested version 
+project(indrome)
 
 add_subdirectory(external)
 
@@ -17,20 +18,26 @@ set(INDROME_API_HEADERS
     inc/indrome/video.h
 )
 
-add_library(libindrome STATIC
+add_library(indrome STATIC
     ${INDROME_SRC}
     ${INDROME_API_HEADERS}
     ${INDROME_INTERNAL_HEADERS}
 )
 
-set_property(TARGET libindrome PROPERTY CXX_STANDARD 14)
-set_property(TARGET libindrome PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET indrome PROPERTY CXX_STANDARD 14)
+set_property(TARGET indrome PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_include_directories(libindrome PUBLIC inc
-                                      PRIVATE internal_inc)
+target_include_directories(indrome PUBLIC inc
+                                   PRIVATE internal_inc)
 
-target_link_libraries(libindrome
+target_link_libraries(indrome
     opencv_core
     opencv_imgcodecs)
 
 add_subdirectory(tools)
+
+option(ENABLE_TEST "Enable indrome tests" OFF)
+
+if(ENABLE_TEST)
+    add_subdirectory(test)
+endif()

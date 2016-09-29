@@ -5,20 +5,24 @@
 
 int main(int, char* argv[])
 {
-    cv::Mat frame = indrome::read_frame_from_stdin();
-
-    if(frame.empty())
+    for(;;)
     {
-        std::cerr << std::string(argv[0]) + ": error reading image from stdin" << std::endl;
-        return -1;
+        cv::Mat frame = indrome::read_frame_from_stdin();
+
+        if(frame.empty())
+        {
+            std::cerr << argv[0] << ": received close signal" << std::endl;
+            indrome::write_close_signal_to_stdout();
+            break;
+        }
+
+        std::cerr << argv[0] << ": Press q to quit" << std::endl;
+
+        cv::imshow("", frame);
+        while(cv::waitKey(100) != 113)  // 'q'
+        {}
+        indrome::write_frame_to_stdout(frame);
     }
-
-    std::cerr << argv[0] << ": Press q to quit" << std::endl;
-
-    cv::imshow("", frame);
-    while(cv::waitKey(100) != 113)  // 'q'
-    {}
-    indrome::write_frame_to_stdout(frame);
 
     return 0;
 }

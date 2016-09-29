@@ -1,69 +1,96 @@
+#include <indrome/util.h>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <stdio.h>
+#include <unistd.h>
+
+
 
 namespace indrome
 {
+    namespace 
+    {
+        /**
+         * The header includes infromation required to read 
+         * the serialized stream and to deserialize the object
+         **/
+        struct stream_header
+        {
+            int rows = 0;
+            int cols = 0;
+            int matrix_type = CV_8U;
+            size_t stream_size = 0;
+            bool closed = false;
+        };
+
+        /**
+         * Create a stream header from an OpenCV Mat
+         * @param m any continuous OpenCV Mat
+         * @return a header object for the Mat m
+         **/
+        stream_header create_header(const cv::Mat& m)
+        {
+            return stream_header {
+                .rows = m.rows,
+                .cols = m.cols,
+                .matrix_type = m.type(),
+                .stream_size = m.size().area()*m.elemSize(),
+                .closed = false
+            };
+        }
+    }
 
     void write_close_signal_to_stdout()
     {
-        // write the header
-        std::cout << (unsigned char)0; 
-        std::cout << (unsigned char)0; 
-        std::cout << (unsigned char)0; 
-        std::cout << (unsigned char)0; 
+        write_close_signal_to_fd(STDOUT_FILENO);
     }
 
-    void write_frame_to_stdout(const cv::Mat& frame)
+    void write_close_signal_to_fd(int fd)
     {
-        std::vector<unsigned char> raw_frame;
+        stream_header h; h.closed = true;
+        write(fd, &h, sizeof(stream_header));
+    }
 
-        raw_frame.resize(frame.total() * frame.elemSize());
+    void write_frame_to_stdout(const cv::Mat& frame) 
+    { 
+        write_frame_to_fd(frame, STDOUT_FILENO); 
+    }
 
-        cv::imencode(".jpg", frame, raw_frame);
+    void write_frame_to_fd(const cv::Mat& frame, int fd)
+    {
+        if(!frame.isContinuous())
+        {
+            std::cerr << "Error writing frame: not continuous" << std::endl;
+            exit(1);
+        }
 
         // write the header
-        unsigned char bytes[4];
-        bytes[0] = (raw_frame.size() & 0xFF);
-        bytes[1] = (raw_frame.size() >>  8 & 0xFF);
-        bytes[2] = (raw_frame.size() >> 16 & 0xFF);
-        bytes[3] = (raw_frame.size() >> 24 & 0xFF);
-
-        std::cout << bytes[0]; 
-        std::cout << bytes[1]; 
-        std::cout << bytes[2]; 
-        std::cout << bytes[3]; 
+        stream_header h = create_header(frame);
+        write(fd, &h, sizeof(h));
 
         // write the frame
-        for(auto u: raw_frame)
-            std::cout << u;
+        write(fd, frame.ptr(), h.stream_size);
     }
 
-    cv::Mat read_frame_from_stdin()
+    cv::Mat read_frame_from_fd(int fd)
     {
         // read the header
-        unsigned char bytes[4];
-        bytes[0] = (unsigned char)fgetc(stdin);
-        bytes[1] = (unsigned char)fgetc(stdin);
-        bytes[2] = (unsigned char)fgetc(stdin);
-        bytes[3] = (unsigned char)fgetc(stdin);
-
-        unsigned int stream_size = 0;
-        stream_size |= (bytes[3] << 24 & 0xFF000000);
-        stream_size |= (bytes[2] << 16 & 0x00FF0000);
-        stream_size |= (bytes[1] << 8  & 0x0000FF00);
-        stream_size |= (bytes[0] & 0x000000FF);
+        stream_header h;
+        read(fd, &h, sizeof(stream_header));
 
         // check for the stop signal
-        if(stream_size == 0)
+        if(h.stream_size == 0)
             return cv::Mat();
 
         // read the frame
-        std::vector<unsigned char> raw_frame(stream_size, 0);
+        cv::Mat frame = cv::Mat::zeros(h.rows, h.cols, h.matrix_type);
+        read(fd, frame.ptr(), h.stream_size);
 
-        for(unsigned int bcount = 0; bcount < stream_size; bcount++)
-            raw_frame[bcount] = (unsigned char)fgetc(stdin);
+        return std::move(frame);
+    }
 
-        return std::move(cv::imdecode(cv::Mat(raw_frame), CV_LOAD_IMAGE_COLOR));
+    cv::Mat read_frame_from_stdin() 
+    { 
+        return std::move(read_frame_from_fd(STDIN_FILENO)); 
     }
 }

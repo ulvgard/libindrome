@@ -40,10 +40,10 @@ int main(int argc, char* argv[])
         bool found = findChessboardCorners( view, board_size, points, cv::CALIB_CB_ADAPTIVE_THRESH);
 
         
+        cv::Mat undistored = view.clone();
         if(found)
         {
-
-
+            cv::cvtColor(view, view, cv::COLOR_BGR2GRAY);
             // Increase detection accuracy
             cv::cornerSubPix(
                     view, 
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
                     cv::Size(11,11), 
                     cv::Size(-1,-1),  
                     cv::TermCriteria(
-                    cv::TermCriteria::COUNT|cv::TermCriteria::EPS, 30,0.01));
+                    cv::TermCriteria::COUNT|cv::TermCriteria::EPS, 30, 0.01));
 
             // Add image points 
             image_points.push_back(points);
@@ -81,9 +81,24 @@ int main(int argc, char* argv[])
                     CV_CALIB_FIX_K4|CV_CALIB_FIX_K5);
 
             std::cerr << "RMS: " << rms << std::endl;
+            std::cerr << "Camera matrix:\n" << cameraMatrix << std::endl;
+            std::cerr << "Distortion matrix:\n" << distCoeffs << std::endl;
+
+            const auto alpha = 0;
+            cv::Mat optimalCameraMatrix = cv::getOptimalNewCameraMatrix(
+                    cameraMatrix,
+                    distCoeffs,
+                    view.size(),
+                    alpha);
+            undistort(view, undistored, optimalCameraMatrix, distCoeffs);
+        }
+        else
+        {
+            std::cerr << argv[0] << ": " << "Could not find chessboard" << std::endl;
         }
 
-        //indrome::write_frame_to_stdout(view);
+
+        indrome::write_frame_to_stdout(undistored);
     }
     
     return 0;
