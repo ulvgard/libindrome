@@ -5,6 +5,15 @@
 namespace indrome
 {
 
+    void write_close_signal_to_stdout()
+    {
+        // write the header
+        std::cout << (unsigned char)0; 
+        std::cout << (unsigned char)0; 
+        std::cout << (unsigned char)0; 
+        std::cout << (unsigned char)0; 
+    }
+
     void write_frame_to_stdout(const cv::Mat& frame)
     {
         std::vector<unsigned char> raw_frame;
@@ -45,12 +54,16 @@ namespace indrome
         stream_size |= (bytes[1] << 8  & 0x0000FF00);
         stream_size |= (bytes[0] & 0x000000FF);
 
+        // check for the stop signal
+        if(stream_size == 0)
+            return cv::Mat();
+
         // read the frame
         std::vector<unsigned char> raw_frame(stream_size, 0);
 
         for(unsigned int bcount = 0; bcount < stream_size; bcount++)
             raw_frame[bcount] = (unsigned char)fgetc(stdin);
 
-        return cv::imdecode(cv::Mat(raw_frame), CV_LOAD_IMAGE_COLOR);
+        return std::move(cv::imdecode(cv::Mat(raw_frame), CV_LOAD_IMAGE_COLOR));
     }
 }

@@ -3,6 +3,11 @@
 namespace indrome 
 {
     /**
+     * Send a closing marker to all applications in the pipeline.
+     **/
+    void write_close_signal_to_stdout();
+
+    /**
      * Writes a frame as jpeg to stdout includign a header
      *
      * The format is: |size_0|size_1|size_2|size_3|byte|byte|byte...

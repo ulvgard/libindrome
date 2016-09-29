@@ -23,6 +23,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
         cv::Mat frame = indrome::read_frame_from_stdin();
+
+        if(frame.empty())
+        {
+            std::cerr << argv[0] << ": received close signal" << std::endl;
+            indrome::write_close_signal_to_stdout();
+            break;
+        }
+
         cv::resize(frame, frame, cv::Size(width,height));
         indrome::write_frame_to_stdout(frame);
     }

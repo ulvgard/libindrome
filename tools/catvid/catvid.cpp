@@ -8,6 +8,12 @@ void usage()
     std::cout << "Sequentially output frames from captures" << std::endl;
 }
 
+static bool is_number(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(), 
+        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+}
+
 int main(int argc, char* argv[]) 
 {
 
@@ -22,9 +28,17 @@ int main(int argc, char* argv[])
     for(int arg = 1; arg < argc; arg++)
     {
         cv::VideoCapture cap;
-        int id = atoi(argv[arg]);
 
-        cap.open(id);
+        if(is_number(argv[arg]))
+        {
+            int id = atoi(argv[arg]);
+
+            cap.open(id);
+        }
+        else
+        {
+            cap.open(argv[arg]);
+        }
 
         if(!cap.isOpened())
         {
