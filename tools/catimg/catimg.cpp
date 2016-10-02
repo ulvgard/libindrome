@@ -20,7 +20,6 @@ int main(int argc, char* argv[])
     for(int i = 1; i < argc; i++)
     {
         auto path = std::string(argv[i]);
-
         cv::Mat image = cv::imread(path, CV_LOAD_IMAGE_COLOR);
 
         if(!image.data )
@@ -30,10 +29,9 @@ int main(int argc, char* argv[])
         }
 
         std::cerr << path << " :: " << image.size() << std::endl;
-
         indrome::write_frame_to_stdout(image);
     }
-    indrome::write_close_signal_to_stdout();
 
+    indrome::write_close_signal_to_stdout();
     fclose(stdout);
 }

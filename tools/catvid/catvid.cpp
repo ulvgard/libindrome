@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
         if(is_number(argv[arg]))
         {
             int id = atoi(argv[arg]);
-
             cap.open(id);
         }
         else
