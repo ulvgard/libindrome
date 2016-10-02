@@ -4,38 +4,44 @@
 namespace indrome 
 {
     /**
-     * Send a closing marker to all applications in the pipeline.
+     * Signal to close the stream on a file descriptor
+     *
+     * @param fd a file descriptior of the stream
      **/
     void write_close_signal_to_fd(int fd);
+
+    /**
+     * Signal to close the stream on stdout
+     **/
     void write_close_signal_to_stdout();
 
     /**
-     * Writes a frame as jpeg to stdout includign a header
+     * Write an continous OpenCV Mat to a file descriptor
      *
-     * The format is: |size_0|size_1|size_2|size_3|byte|byte|byte...
-     *
-     * where the first 4 bytes represent the size of the frame 
-     * as an unsigned integer. The consecutive bytes are the 
-     * contents of the jpeg. This stream can be read by @ref read_frame_from_stdio.
-     *
-     * @param frame The OpenCV frame to print
+     * @param frame a continous OpenCV Mat write 
+     * @param fd file descriptor to write to
      **/
-
     void write_frame_to_fd(const cv::Mat& frame, int fd);
+
+    /**
+     * Write an continous OpenCV Mat to stdout 
+     *
+     * @param frame a continous OpenCV Mat write 
+     **/
     void write_frame_to_stdout(const cv::Mat& frame);
 
     /**
-     * Reads a jpeg from stdin including a header
+     * Read an OpenCV Mat from a file descriptor
      *
-     * The format is: |size_0|size_1|size_2|size_3|byte|byte|byte...
+     * @param fd file desrriptor to read from
+     * @return a OpenCV Mat read from a file descriptor
+     **/
+    cv::Mat read_frame_from_fd(int fd);
+
+    /**
+     * Read an OpenCV Mat from stdin 
      *
-     * where the first 4 bytes represent the size of the frame 
-     * as an unsigned integer. The consecutive bytes are the 
-     * contents of the jpeg. This stream can be read output form 
-     * @ref write_frame_to_stdout.
-     *
-     * @return frame the read OpenCV frame; 
+     * @return a OpenCV Mat read from a stdin 
      **/
     cv::Mat read_frame_from_stdin();
-    cv::Mat read_frame_from_fd(int fd);
 }

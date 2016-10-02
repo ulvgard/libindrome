@@ -25,6 +25,7 @@ namespace indrome
 
         /**
          * Create a stream header from an OpenCV Mat
+         *
          * @param m any continuous OpenCV Mat
          * @return a header object for the Mat m
          **/
