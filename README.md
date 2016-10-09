@@ -16,7 +16,7 @@ To build libindrome you require
 
 libindrome depends on
 
-* OpenCV
+* OpenCV. Tested with 3.1
 * [optional] gtest
 
 Download the source code
