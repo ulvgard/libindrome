@@ -11,12 +11,13 @@ To build libindrome you require
 
 * CMake, tested with CMake 3.6
 * C++ compiler (C++11 compatible). Tested with Clang 3.8
+* OpenCV 3.1
+
 
 ## Dependencies
 
 libindrome depends on
 
-* OpenCV. Tested with 3.1
 * [optional] gtest
 
 Download the source code
