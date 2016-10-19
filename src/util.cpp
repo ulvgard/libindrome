@@ -93,4 +93,77 @@ namespace indrome
     { 
         return std::move(read_frame_from_fd(STDIN_FILENO)); 
     }
+
+	void write_mat_to_file(const std::string& filename, const std::string& tag, const cv::Mat& frame)
+	{
+		cv::FileStorage f(filename, cv::FileStorage::WRITE);
+
+		if(!f.isOpened())
+		{
+			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			return;
+		}
+
+		f << tag << frame;
+		f.release();
+	}
+
+	void write_mats_to_file(const std::string& filename, std::vector<std::pair<const std::string, const cv::Mat>>& tags_and_mats)
+	{
+		cv::FileStorage f(filename, cv::FileStorage::WRITE);
+
+		if(!f.isOpened())
+		{
+			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			return;
+		}
+
+		for(const auto& p: tags_and_mats)
+			f << p.first << p.second;
+
+		f.release();
+	}
+
+	cv::Mat read_mat_from_file(const std::string& filename, const std::string& tag)
+	{
+		cv::FileStorage f(filename, cv::FileStorage::READ);
+
+		if(!f.isOpened())
+		{
+			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			return cv::Mat();
+		}
+
+		cv::Mat frame;
+		f[tag] >> frame;
+		f.release();
+
+		return frame;
+	}
+
+	std::vector<cv::Mat> read_mats_from_file(
+			const std::string& filename,
+			const std::vector<std::string> tags)
+	{
+		cv::FileStorage f(filename, cv::FileStorage::READ);
+
+		if(!f.isOpened())
+		{
+			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			return cv::Mat();
+		}
+
+		std::vector<cv::Mat> mats;
+
+		for(const auto& tag: tags)
+		{
+			cv::Mat frame;
+			f[tag] >> frame;
+			mats.push_back(frame);
+		}
+		f.release();
+
+		return mats;
+	}
+
 }

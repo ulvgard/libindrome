@@ -1,16 +1,18 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <indrome/util.h>
+#include <iostream>
+#include <fstream>
 
 void usage() 
 {
-    std::cerr << "Usage: WIDTH_INNER_CORNERS HEIGHT_INNER_CORNERS" << std::endl;
+    std::cerr << "Usage: WIDTH_INNER_CORNERS HEIGHT_INNER_CORNERS [OUTPUT_FILE_NAME].txt" << std::endl;
     std::cerr << "Sequentially output frames from captures" << std::endl;
 }
 
 int main(int argc, char* argv[]) 
 {
-    if(argc != 3)
+    if(argc < 3)
     {
         usage();
         return -1;
@@ -18,11 +20,22 @@ int main(int argc, char* argv[])
 
     const cv::Size board_size(atoi(argv[1]), atoi(argv[2])); 
 
+	auto output_to_file = false;
+	auto output_file_name = "";
+
+	if(argc >= 4)
+	{
+		output_file_name = argv[3];
+		output_to_file = true;
+	}
+
 
     // object points
     std::vector<std::vector<cv::Vec3f>> object_points;
     std::vector<std::vector<cv::Vec2f>> image_points;
 
+	cv::Mat optimalCameraMatrix;
+	cv::Mat distCoeffs = cv::Mat::zeros(8, 1, CV_64F);
 
     for(;;)
     {
@@ -69,7 +82,7 @@ int main(int argc, char* argv[])
             std::vector<cv::Mat> rvecs;
             std::vector<cv::Mat> tvecs;
             cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
-            cv::Mat distCoeffs = cv::Mat::zeros(8, 1, CV_64F);
+
             const auto rms = calibrateCamera(
                     object_points, 
                     image_points, 
@@ -85,11 +98,12 @@ int main(int argc, char* argv[])
             std::cerr << "Distortion matrix:\n" << distCoeffs << std::endl;
 
             const auto alpha = 0;
-            cv::Mat optimalCameraMatrix = cv::getOptimalNewCameraMatrix(
+            optimalCameraMatrix = cv::getOptimalNewCameraMatrix(
                     cameraMatrix,
                     distCoeffs,
                     view.size(),
                     alpha);
+
             undistort(view, undistored, optimalCameraMatrix, distCoeffs);
         }
         else
@@ -100,6 +114,16 @@ int main(int argc, char* argv[])
 
         indrome::write_frame_to_stdout(undistored);
     }
+
+	if(output_to_file)
+	{
+		auto kpair = std::make_pair("K", optimalCameraMatrix);
+		auto dpair = std::make_pair("distCoeffs", distCoeffs);
+
+		std::vector<std::pair<const std::string, const cv::Mat> > pairs = {kpair, dpair};
+
+		indrome::write_mats_to_file(output_file_name, pairs);
+	}
     
     return 0;
 }
