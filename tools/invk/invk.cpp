@@ -6,14 +6,15 @@
 
 void usage() 
 {
-    std::cerr << "Usage: calibration.bin" << std::endl;
-    std::cerr << "Apply the inverted camera calibraiton matrix" << std::endl;
+    std::cerr << "Usage: CALIBRATION_FILE" << std::endl;
+    std::cerr << "Apply the inverted camera calibraiton matrix\n" << std::endl;
 }
 
 int main(int argc, char* argv[]) 
 {
     if(argc != 2)
     {
+		std::cerr << "Error using " << argv[0] << std::endl;
         usage();
         return -1;
     }
