@@ -40,6 +40,12 @@ target_link_libraries(indrome
 
 add_subdirectory(tools)
 
+option(ENABLE_DEMO "Enable indrome demos" OFF)
+
+if(ENABLE_DEMO)
+    add_subdirectory(demo)
+endif()
+
 option(ENABLE_TEST "Enable indrome tests" OFF)
 
 if(ENABLE_TEST)
