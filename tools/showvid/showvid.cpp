@@ -4,8 +4,25 @@
 #include <iostream>
 #include <string>
 
+void usage()
+{
+	std::cerr << "Usage: [FRAME_DELAY]" << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
+	int delay = 5;
+
+	if(argc > 2)
+	{
+		std::cerr << "Error: invalid arguments\n" << std::endl;
+		usage();
+		return -1;
+	}
+
+	if(argc == 2)
+		delay = atoi(argv[1]);
+
     for(;;) {
 
         cv::Mat view = indrome::read_frame_from_stdin();
@@ -17,8 +34,8 @@ int main(int argc, char* argv[])
             break;
         }
 
-        cv::imshow(window_name, view);
-        cv::waitKey(5);
+        cv::imshow("", view);
+        cv::waitKey(delay);
         indrome::write_frame_to_stdout(view);
     }
 
