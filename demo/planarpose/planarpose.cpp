@@ -11,30 +11,32 @@ enum args
 	INNER_CORNER_HEIGHT
 };
 
-int main(int argc, char* argv[]) 
+void usage()
+{
+	std::cerr << "Usage: CALIBRATION_FILE INNER_CORNER_WIDTH INNER_CORNER_HEIGHT" << std::endl;
+}
+
+int main(int argc, char* argv[])
 {
     if(argc != 4)
     {
+		std::cerr << "Error: wrong number of arguments\n" << std::endl;
+		usage();
         return -1;
     }
 
-	std::vector<std::string> tags = {"K", "distCoeffs"};
+	std::vector<std::string> tags = {indrome::keywords::K, indrome::keywords::distCoeffs};
 
 	auto mats = indrome::read_mats_from_file(std::string(argv[args::KFILE]), tags);
 	auto K = mats[0];
 	auto distCoeffs = mats[1];
 
-    const cv::Size board_size(atoi(argv[args::INNER_CORNER_WIDTH]), atoi(argv[args::INNER_CORNER_HEIGHT])); 
-
-    // object points
-    std::vector<cv::Vec3f> object_points;
-    std::vector<cv::Vec2f> image_points;
+    const cv::Size board_size(
+			atoi(argv[args::INNER_CORNER_WIDTH]),
+			atoi(argv[args::INNER_CORNER_HEIGHT]));
 
     for(;;)
     {
-		object_points.clear();
-		image_points.clear();
-
         cv::Mat view = indrome::read_frame_from_stdin();
 
         if(view.empty())
@@ -45,14 +47,16 @@ int main(int argc, char* argv[])
         }
 
         std::vector<cv::Vec2f> points;
-
         bool found = findChessboardCorners( view, board_size, points, cv::CALIB_CB_ADAPTIVE_THRESH);
-
         
         if(found)
         {
 			cv::Mat grey = view.clone();
             cv::cvtColor(view, grey, cv::COLOR_BGR2GRAY);
+
+			std::vector<cv::Vec3f> object_points;
+			std::vector<cv::Vec2f> image_points;
+
             // Increase detection accuracy
             cv::cornerSubPix(
                     grey, 
@@ -101,7 +105,6 @@ int main(int argc, char* argv[])
         {
             std::cerr << argv[0] << ": " << "Could not find chessboard" << std::endl;
         }
-
 
         indrome::write_frame_to_stdout(view);
     }
