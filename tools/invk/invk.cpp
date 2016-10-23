@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-	std::vector<std::string> tags = {"K", "distCoeffs"};
+	std::vector<std::string> tags = {indrome::keywords::K, indrome::keywords::distCoeffs};
 
 	auto mats = indrome::read_mats_from_file(
 			std::string(argv[1]), tags);

@@ -117,8 +117,8 @@ int main(int argc, char* argv[])
 
 	if(output_to_file)
 	{
-		auto kpair = std::make_pair("K", optimalCameraMatrix);
-		auto dpair = std::make_pair("distCoeffs", distCoeffs);
+		auto kpair = std::make_pair(indrome::keywords::K, optimalCameraMatrix);
+		auto dpair = std::make_pair(indrome::keywords::distCoeffs, distCoeffs);
 
 		std::vector<std::pair<const std::string, const cv::Mat> > pairs = {kpair, dpair};
 

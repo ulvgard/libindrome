@@ -45,6 +45,12 @@ namespace indrome
      **/
     cv::Mat read_frame_from_stdin();
 
+	namespace keywords
+	{
+		const std::string K = "K";
+		const std::string distCoeffs = "distCoeffs";
+	}
+
 	/**
 	 * Write one or more and OpenCV Matrices to file
 	 *
