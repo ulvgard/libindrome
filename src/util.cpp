@@ -100,7 +100,7 @@ namespace indrome
 
 		if(!f.isOpened())
 		{
-			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			std::cerr << "Unable to write to file " << filename << std::endl;
 			return;
 		}
 
@@ -114,7 +114,7 @@ namespace indrome
 
 		if(!f.isOpened())
 		{
-			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			std::cerr << "Unable to write to file " << filename << std::endl;
 			return;
 		}
 
@@ -130,7 +130,7 @@ namespace indrome
 
 		if(!f.isOpened())
 		{
-			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			std::cerr << "Unable to read file " << filename << std::endl;
 			return cv::Mat();
 		}
 
@@ -149,7 +149,7 @@ namespace indrome
 
 		if(!f.isOpened())
 		{
-			std::cerr << "Unable to write Mat to file " << filename << std::endl;
+			std::cerr << "Unable to read file " << filename << std::endl;
 			return cv::Mat();
 		}
 
