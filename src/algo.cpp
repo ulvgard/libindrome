@@ -4,13 +4,27 @@ namespace indrome {
 namespace algo 
 {
 	cv::Mat compute_fundamental(
-			std::vector<cv::Points2f> points_left, 
-			std::vector<cv::Points2f> points_right)
+			const std::vector<cv::Vec3f> points_left,
+			const std::vector<cv::Vec3f> points_right)
+	{
+		std::vector<cv::Vec2f> pl;
+		std::vector<cv::Vec2f> pr;
+
+		for(const auto& p: points_left)
+			pl.push_back(cv::Vec2f(p(1), p(2)));
+		for(const auto& p: points_right)
+			pr.push_back(cv::Vec2f(p(1), p(2)));
+
+		return compute_fundamental(pl, pr);
+	}
+	cv::Mat compute_fundamental(
+			const std::vector<cv::Vec2f> points_left,
+			const std::vector<cv::Vec2f> points_right)
 	{
 		return cv::findFundamentalMat(
 				points_left,
 				points_right,
-				cv::CV_FM_8POINT)
+				CV_FM_8POINT);
 	}
 }
 }
