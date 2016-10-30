@@ -11,9 +11,12 @@ namespace algo
 		std::vector<cv::Vec2f> pr;
 
 		for(const auto& p: points_left)
-			pl.push_back(cv::Vec2f(p(1), p(2)));
+		{
+			pl.push_back(cv::Vec2f(p(0), p(1)));
+		}
+
 		for(const auto& p: points_right)
-			pr.push_back(cv::Vec2f(p(1), p(2)));
+			pr.push_back(cv::Vec2f(p(0), p(1)));
 
 		return compute_fundamental(pl, pr);
 	}
