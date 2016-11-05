@@ -2,10 +2,9 @@
 #include <opencv2/features2d.hpp>
 #include <iostream>
 #include <indrome/util.h>
+#include <indrome/algo.h>
 
-
-
-int main(int argc, char* argv[]) 
+int main(int , char* argv[])
 {
 
 	cv::Mat ref_keyframe;
@@ -41,12 +40,12 @@ int main(int argc, char* argv[])
 		cv::Ptr<cv::DescriptorMatcher> matcher = cv::DescriptorMatcher::create("BruteForce");
 		matcher->knnMatch( ref_descriptors, descriptors, matches, 500 );
 
-		//look whether the match is inside a defined area of the image
-		//only 25% of maximum of possible distance
 		double tresholdDist = 0.25 * sqrt(double(ref_keyframe.size().height*ref_keyframe.size().height + ref_keyframe.size().width*ref_keyframe.size().width));
 
 		std::vector< cv::DMatch > good_matches2;
 		good_matches2.reserve(matches.size());  
+
+		std::vector<cv::Vec2f> pl, pr;
 
 		for (int i = 0; i < (int)matches.size(); ++i)
 		{ 
@@ -56,24 +55,26 @@ int main(int argc, char* argv[])
 				cv::Point2f from = ref_keypoints[matches[i][j].queryIdx].pt;
 				cv::Point2f to = keypoints[matches[i][j].trainIdx].pt;
 		
-				//calculate local distance for each possible match
 				double dist = sqrt((from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y));
 
-				//save as best match if local distance is in specified area and on same height
 				if (dist < tresholdDist && fabs(from.y-to.y)<5)
 				{
 					good_matches2.push_back(matches[i][j]);
 					j = matches[i].size();
 
-					std::cerr << from.x << " " << from.y << std::endl;
-					std::cerr << to.x << " " << to.y << std::endl;
+					if(pr.size() != 8)
+					{
+						pr.push_back(cv::Vec2f(from.x, from.y));
+					}
+
+					if(pl.size() != 8)
+					{
+						pl.push_back(cv::Vec2f(to.x, to.y));
+					}
 				}
 			}
-
 		}
 
-		//cv::Mat stereo;
-		//cv::hconcat(view, ref_keyframe, stereo); 
 		cv::Mat matchview;
 		cv::drawMatches(ref_keyframe
 				, ref_keypoints

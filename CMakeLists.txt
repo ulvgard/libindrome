@@ -36,7 +36,8 @@ target_include_directories(indrome PUBLIC inc
 
 target_link_libraries(indrome
     opencv_core
-    opencv_imgcodecs)
+    opencv_imgcodecs
+    opencv_calib3d)
 
 add_subdirectory(tools)
 
