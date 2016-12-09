@@ -3,9 +3,17 @@ project(indrome)
 
 find_package( OpenCV REQUIRED )
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(COMPILING_WITH_CLANG TRUE)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(COMPILING_WITH_GCC TRUE)
+endif()
+
 add_subdirectory(external)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+if(COMPILING_WITH_GCC OR COMPILING_WITH_CLANG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif()
 
 set(INDROME_SRC
     src/util.cpp
