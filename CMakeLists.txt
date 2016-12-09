@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6) # The only tested version 
+cmake_minimum_required(VERSION 3.4) # The only tested version 
 project(indrome)
 
 find_package( OpenCV REQUIRED )
@@ -22,24 +22,27 @@ set(INDROME_API_HEADERS
 	inc/indrome/algo.h
 )
 
-add_library(indrome STATIC
+add_library(indrome 
     ${INDROME_SRC}
     ${INDROME_API_HEADERS}
     ${INDROME_INTERNAL_HEADERS}
 )
 
 set_property(TARGET indrome PROPERTY CXX_STANDARD 14)
-set_property(TARGET indrome PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(indrome PUBLIC inc
                                    PRIVATE internal_inc)
 
-target_link_libraries(indrome
+target_link_libraries(indrome PRIVATE
     opencv_core
     opencv_imgcodecs
     opencv_calib3d)
 
-add_subdirectory(tools)
+option(INDROME_ENABLE_TOOLS "Enable commandline tools" OFF)
+
+if(INDROME_ENABLE_TOOLS)
+    add_subdirectory(tools)
+endif()
 
 option(ENABLE_DEMO "Enable indrome demos" OFF)
 

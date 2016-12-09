@@ -1,13 +1,12 @@
-add_subdirectory(baw)
-add_subdirectory(catimg)
-add_subdirectory(catvid)
-add_subdirectory(chesscalib)
-add_subdirectory(invk)
-add_subdirectory(lsvideo)
-add_subdirectory(orbmatcher)
-add_subdirectory(resizevid)
-add_subdirectory(showimg)
-add_subdirectory(showvid)
+add_subdirectory(baw EXCLUDE_FROM_ALL)
+add_subdirectory(catimg EXCLUDE_FROM_ALL)
+add_subdirectory(catvid EXCLUDE_FROM_ALL)
+add_subdirectory(chesscalib EXCLUDE_FROM_ALL)
+add_subdirectory(invk EXCLUDE_FROM_ALL)
+add_subdirectory(lsvideo EXCLUDE_FROM_ALL)
+add_subdirectory(resizevid EXCLUDE_FROM_ALL)
+add_subdirectory(showimg EXCLUDE_FROM_ALL)
+add_subdirectory(showvid EXCLUDE_FROM_ALL)
 
 add_custom_target(tools ALL DEPENDS 
     baw
@@ -16,7 +15,6 @@ add_custom_target(tools ALL DEPENDS
     chesscalib
 	invk
     lsvideo
-    orbmatcher 
     resizevid
     showimg
     showvid)
