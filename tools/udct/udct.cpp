@@ -41,4 +41,10 @@ int main(int argc, char* argv[])
 
     auto data = indrome::io::csv::readlines<float>(ifp);
     applog("read " + std::to_string(data.size())+ " lines");
+
+    std::ostream stream(nullptr);
+    stream << "";
+    stream.rdbuf(std::cout.rdbuf()); 
+
+    indrome::io::csv::writelines<float>(data, stream);
 }

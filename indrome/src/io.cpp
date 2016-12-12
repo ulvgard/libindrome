@@ -50,6 +50,27 @@ namespace indrome
             template std::vector<std::vector<int>>       readlines(std::istream& is);
             template std::vector<std::vector<float>>     readlines(std::istream& is);
             template std::vector<std::vector<double>>    readlines(std::istream& is);
+
+            template<typename T> void writeline(const std::vector<T>& row, std::ostream& os)
+            {
+                for(auto it = row.begin(); it != row.end()-1; it++)
+                    os << std::to_string(*it) << ",";
+                os << *row.end() << "\n";
+            }
+
+            template void writeline(const std::vector<int>& row, std::ostream& os);
+            template void writeline(const std::vector<float>& row, std::ostream& os);
+            template void writeline(const std::vector<double>& row, std::ostream& os);
+
+            template<typename T> void writelines(const std::vector<std::vector<T>>& data, std::ostream& os)
+            {
+                for(const auto& row: data)
+                    writeline<T>(row, os);
+            }
+
+            template void writelines(const std::vector<std::vector<int>>& data, std::ostream& os);
+            template void writelines(const std::vector<std::vector<float>>& data, std::ostream& os);
+            template void writelines(const std::vector<std::vector<double>>& data, std::ostream& os);
         }
     }
 }
