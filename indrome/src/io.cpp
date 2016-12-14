@@ -55,7 +55,7 @@ namespace indrome
             {
                 for(auto it = row.begin(); it != row.end()-1; it++)
                     os << std::to_string(*it) << ",";
-                os << *row.end() << "\n";
+                os << std::to_string(*(row.end()-1)) << "\n";
             }
 
             template void writeline(const std::vector<int>& row, std::ostream& os);
