@@ -3,6 +3,8 @@ project(indrome)
 
 find_package( OpenCV REQUIRED )
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}/${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
 add_subdirectory(external)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -23,14 +25,13 @@ if(INDROME_ENABLE_TOOLS)
     add_subdirectory(tools)
 endif()
 
-option(ENABLE_DEMO "Enable indrome demos" OFF)
-
-if(ENABLE_DEMO)
+option(INDROME_ENABLE_DEMO "Enable indrome demos" OFF)
+if(INDROME_ENABLE_DEMO)
     add_subdirectory(demo)
 endif()
 
-option(ENABLE_TEST "Enable indrome tests" OFF)
+option(INDROME_ENABLE_TEST "Enable indrome tests" OFF)
 
-if(ENABLE_TEST)
+if(INDROME_ENABLE_TEST)
     add_subdirectory(test)
 endif()

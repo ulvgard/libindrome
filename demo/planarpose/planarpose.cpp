@@ -1,6 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <indrome/util.h>
+#include <indrome/rpc.h>
 #include <iostream>
 #include <fstream>
 
@@ -34,6 +35,9 @@ int main(int argc, char* argv[])
     const cv::Size board_size(
 			atoi(argv[args::INNER_CORNER_WIDTH]),
 			atoi(argv[args::INNER_CORNER_HEIGHT]));
+
+    //auto frameBrokerClient = indrome::io::rpc::NewFrameBrokerClient();
+    auto poseUpdaterClient = indrome::io::rpc::pose::NewPoseUpdaterClient("0.0.0.0:50100");
 
     for(;;)
     {
@@ -100,6 +104,20 @@ int main(int argc, char* argv[])
 						5);
 			}
 
+            cv::Mat R33; Rodrigues(rvec, R33);
+            cv::Mat H;
+            hconcat(R33, tvec, H);
+            cv::Mat r4 = cv::Mat::zeros(1,4,CV_64F);
+            cv::Mat V;
+            vconcat(H, r4, V);
+            V.at<double>(3,3) = 1.0;
+            auto Vinv = V.inv();
+            std::cerr << Vinv << std::endl;
+
+
+            auto R = indrome::to_vec2d(rvec);
+            auto t = indrome::to_vec2d(Vinv.col(3));
+            poseUpdaterClient.PoseUpdate(R, t);
         }
         else
         {

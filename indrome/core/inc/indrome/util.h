@@ -3,6 +3,8 @@
 
 namespace indrome 
 {
+    std::vector<std::vector<float>> to_vec2d(const cv::Mat& frame);
+
     /**
      * Signal to close the stream on a file descriptor
      *

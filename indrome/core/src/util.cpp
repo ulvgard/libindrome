@@ -40,6 +40,18 @@ namespace indrome
         }
     }
 
+    std::vector<std::vector<float>> to_vec2d(const cv::Mat& frame)
+    {
+        std::vector<std::vector<float > > vmat(frame.rows);
+        for(auto i = 0; i < frame.rows; i++)
+        {
+            vmat[i].resize(frame.cols);
+            for(auto j =0; j < frame.cols; j++)
+                vmat[i][j] = (float)frame.at<double>(i,j);         
+        }
+        return vmat;
+    }
+
     void write_close_signal_to_stdout()
     {
         write_close_signal_to_fd(STDOUT_FILENO);

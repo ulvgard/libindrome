@@ -18,7 +18,9 @@ To build libindrome you require
 
 libindrome depends on
 
-* [optional] gtest
+* [optional] gtest (required by tests)
+* [optional] cxxopts (required by tools)
+* [optional] grpc (required by some tools)
 
 Download the source code
 

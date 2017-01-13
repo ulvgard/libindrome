@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package indrome_grpc;
+
+message Empty {}
+
+message Mat 
+{
+    int32 rows = 1;
+    int32 cols = 2;
+    repeated float coeffs = 3 [packed = true];
+    bool column_major = 4;
+}
+
+message Pose 
+{
+    Mat R = 1;
+    Mat t = 2;
+}
+
+service PoseUpdater
+{
+    rpc PoseUpdate(Pose) returns (Empty) {};
+}

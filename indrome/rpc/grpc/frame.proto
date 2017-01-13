@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package indrome_grpc;
+
+message FrameRequest {
+    bytes data = 1;
+};
+
+message FrameReply {}
+
+service FrameBroker
+{
+    rpc SendFrame(FrameRequest) returns (FrameReply) {}
+}
